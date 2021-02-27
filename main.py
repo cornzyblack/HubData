@@ -5,7 +5,9 @@ import argparse
 def get_args():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--period", choices=["day", "week", "month"], default="day")
+    parser.add_argument(
+        "--period", choices=["day", "week", "month", "year"], default="day"
+    )
 
     return parser.parse_args()
 
