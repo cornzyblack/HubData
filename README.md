@@ -68,4 +68,4 @@ To use the project:
 
 
 
-The results are stored in **{period}_{current_date}.csv** format
+The results are stored as **{period}_{current_date}.csv** format
