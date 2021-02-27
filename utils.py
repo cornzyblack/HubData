@@ -216,14 +216,15 @@ class HubData:
             print(e)
         return df
 
-    def save_to_csv(self, df: pd.DataFrame):
+    def save_to_csv(self, df: pd.DataFrame, filename: str):
         """Save the Table to a CSV format
 
         Args:
             df (pd.DataFrame): The normalized DataFrame
         """
         str_name = datetime.now().strftime("%Y%m%d")
-        file_name = self.period + "_" + str_name + ".csv"
+        if not file_name:
+            filename = self.period + "_" + str_name + ".csv"
         if not df.empty:
-            df.to_csv(file_name, index=False)
+            df.to_csv(filename, index=False)
             print(f"File has been saved as {str_name}")
