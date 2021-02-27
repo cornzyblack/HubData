@@ -104,7 +104,11 @@ class HubData:
                 table_data = soup.select(
                     'table[Summary="Henry Hub Natural Gas Spot Price (Dollars per Million Btu)"]'
                 )[0]
-                df = pd.read_html(str(table_data))[0].dropna(how="all").reset_index()
+                df = (
+                    pd.read_html(str(table_data))[0]
+                    .dropna(how="all")
+                    .reset_index(drop=True)
+                )
         except Exception as e:
             print(e)
         return df
@@ -122,7 +126,7 @@ class HubData:
         end_date = None
         start_date = None
 
-        year = get_year(date_range_str)
+        year = self.get_year(date_range_str)
         # Search for Date Match
         start_date_match = re.search("^\d{4}[JFADMONDS]\w{2}\-\d{1,2}", date_range_str)
         end_date_match = re.search("[JFADMONDS]\w{2}\-\d{1,2}$", date_range_str)
@@ -205,6 +209,7 @@ class HubData:
 
             if self.period == "year":
                 df = self.normalize_yearly_tables(df)
+
             if self.period == "week":
                 pass
             if self.period == "month":
@@ -228,6 +233,7 @@ class HubData:
         if not filename:
             str_name = datetime.now().strftime("%Y%m%d")
             filename = self.period + "_" + str_name + ".csv"
+
         if not self.df.empty:
             self.df.to_csv(filename, index=False)
             print(f"File has been saved as {filename}")
