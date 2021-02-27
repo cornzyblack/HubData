@@ -101,7 +101,7 @@ class HubData:
         df = None
         try:
             if page_content:
-                soup = BeautifulSoup(page_content)
+                soup = BeautifulSoup(page_content, parser="lxml")
                 table_data = soup.select(
                     'table[Summary="Henry Hub Natural Gas Spot Price (Dollars per Million Btu)"]'
                 )[0]
@@ -119,7 +119,7 @@ class HubData:
         Returns:
             Tuple[datetime, datetime]: The Start Date and End date of a date string range
         """
-        date_range_str = clean_date(date_range_str)
+        date_range_str = self.clean_date(date_range_str)
         end_date = None
         start_date = None
 
@@ -226,8 +226,8 @@ class HubData:
             df (pd.DataFrame): The normalized DataFrame
             filename (str): The name of the file
         """
-        str_name = datetime.now().strftime("%Y%m%d")
         if not filename:
+            str_name = datetime.now().strftime("%Y%m%d")
             filename = self.period + "_" + str_name + ".csv"
         if not self.df.empty:
             self.df.to_csv(filename, index=False)
