@@ -219,7 +219,7 @@ class HubData:
             print(e)
         return df
 
-    def save_to_csv(self, filename: str):
+    def save_to_csv(self, filename: str = None):
         """Save the Table to a CSV format
 
         Args:
