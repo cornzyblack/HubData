@@ -16,6 +16,9 @@ class HubData:
 
     Args:
         period (str): The period (Day, Week, Year)
+        url (str): The Url for the selected Period (Day, Week, Year)
+        df (pd.DataFrame): The DataFrame for the selected Period
+
 
     Attributes:
         url (str): This is the URL page for the specific period
@@ -27,8 +30,8 @@ class HubData:
         pg_content = self.get_html()
         df_tables = self.get_tables(pg_content)
 
-        df = self.normalize_tables(df_tables)
-        self.save_to_csv(df)
+        self.df = self.normalize_tables(df_tables)
+        self.save_to_csv()
 
     def get_url(self):
         """Get the URL for a period
@@ -216,15 +219,16 @@ class HubData:
             print(e)
         return df
 
-    def save_to_csv(self, df: pd.DataFrame, filename: str):
+    def save_to_csv(self, filename: str):
         """Save the Table to a CSV format
 
         Args:
             df (pd.DataFrame): The normalized DataFrame
+            filename (str): The name of the file
         """
         str_name = datetime.now().strftime("%Y%m%d")
         if not filename:
             filename = self.period + "_" + str_name + ".csv"
         if not df.empty:
-            df.to_csv(filename, index=False)
+            self.df.to_csv(filename, index=False)
             print(f"File has been saved as {str_name}")
