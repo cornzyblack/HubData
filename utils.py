@@ -9,40 +9,67 @@ from bs4 import BeautifulSoup
 from typing import List, Dict, Optional
 from dateutil.relativedelta import relativedelta
 
-class HubData():
+
+class HubData:
+    """
+    The HubData object contains a Scraper that scrapes the hub-data page
+
+    Args:
+        period (str): The period (Day, Week, Year)
+
+    Attributes:
+        url (str): This is the URL page for the specific period
+    """
 
     def __init__(self, period: str = "day"):
         self.period = period
-        self.url = get_url()
+        self.url = self.get_url()
+        pg_content = self.get_html()
+        df_tables = self.get_tables(pg_content)
 
-    def scrape_table(self):
-        self.url = get_url()
-        pg_content = get_html(SITE_URL)
-        df_tables = get_tables(pg_content)
-        df = normalize_tables(df_tables, period="day")
+        df = self.normalize_tables(df_tables)
+        self.save_to_csv(df)
 
     def get_url(self):
-        period_dict = {"day": "rngwhhdD", "year": "rngwhhdA", "month": "rngwhhdM", "week": "rngwhhdW"}
+        """Get the URL for a period
+
+        Returns:
+            cars: A car mileage
+        """
+        period_dict = {
+            "day": "rngwhhdD",
+            "year": "rngwhhdA",
+            "month": "rngwhhdM",
+            "week": "rngwhhdW",
+        }
 
         select_period = period_dict.get(self.period, None)
-        url = f'http://www.eia.gov/dnav/ng/hist/{select_period}.htm'
+        url = f"http://www.eia.gov/dnav/ng/hist/{select_period}.htm"
         return url
 
-    def get_year(self, date:str)-> Optional[str]:
+    def get_year(self, date: str) -> Optional[str]:
+        """Get the Year from string
+
+        Args:
+            date (str): The string that contains the year
+
+        Returns:
+            cars: A car mileage
+        """
         year = None
         year_match = re.search("^\d{4}", date)
         if year_match:
             year = year_match.group(0)
         return year
 
-    def clean_date(self, date:str) -> str:
-        return ''.join(date.split())
+    def clean_date(self, date: str) -> str:
+        return "".join(date.split())
 
     def get_html(self) -> bytes:
         page_content = None
         soup = None
         try:
-            req = requests.get(url)
+            req = requests.get(self.url)
             if req.status_code == 200:
                 page_content = req.content
 
@@ -55,7 +82,9 @@ class HubData():
         try:
             if page_content:
                 soup = BeautifulSoup(page_content)
-                table_data = soup.select('table[Summary="Henry Hub Natural Gas Spot Price (Dollars per Million Btu)"]')[0]
+                table_data = soup.select(
+                    'table[Summary="Henry Hub Natural Gas Spot Price (Dollars per Million Btu)"]'
+                )[0]
                 df = pd.read_html(str(table_data))[0].dropna(how="all").reset_index()
         except Exception as e:
             print(e)
@@ -83,25 +112,46 @@ class HubData():
 
         return start_date, end_date
 
+    def normalize_monthly_tables(self, df: pd.DataFrame):
+        df = df.melt(["Year"], var_name="month", value_name="Price")
+        df = df.rename(columns={"Year": "Date"})
+        df["Date"] = pd.to_datetime(
+            "01/" + df["month"] + "/" + df.Date.astype(int).astype(str)
+        )
+        return df
+
+    def normalize_yearly_tables(self, df: pd.DataFrame):
+        df = df.melt(["Decade"], var_name="Year", value_name="Price")
+        df["Decade"] = df["Decade"].str.replace("'s", "", regex=True).astype(int)
+        df["Year"] = df["Year"].str.replace("Year\-", "", regex=True).astype(int)
+        df["Date"] = df["Decade"] + df["Year"]
+        df = df.sort_values(by="Date")[["Date", "Price"]]
+        return df
+
+    def normalize_daily_tables(self, df: pd.DataFrame):
+        dates = []
+        daily_arr = np.array(df[["Mon", "Tue", "Wed", "Thu", "Fri"]]).flatten()
+        date_range_list = list(
+            pd.bdate_range(*self.get_date_range(week)) for week in df["Week Of"]
+        )
+        for date_range in date_range_list:
+            dates.extend(date_range)
+
+        df = pd.DataFrame({"Date": dates, "Price": daily_arr})
+        return df
+
     def normalize_tables(self, df: pd.DataFrame) -> pd.DataFrame:
         try:
-            if self.period == "year":
-                df = df.melt(['Year'], var_name='month', value_name='Price')
-                df = df.rename(columns={"Year": "Date"})
-                df["Date"] = pd.to_datetime("01/" + df['month']+ "/" + df.Date.astype(int).astype(str))
+            df = df.replace({"--": np.nan, "W": np.nan})
 
+            if self.period == "year":
+                df = self.normalize_yearly_tables(df)
             if self.period == "week":
                 pass
             if self.period == "month":
-                pass
+                df = self.normalize_monthly_tables(df)
             if self.period == "day":
-                dates = []
-                daily_arr = np.array(df_tables[['Mon', 'Tue', 'Wed', 'Thu', 'Fri']]).flatten()
-                date_range_list = list(pd.bdate_range(*self.get_date_range(week)) for week in df["Week Of"])
-                for date_range in date_range_list:
-                    dates.extend(date_range)
-
-                df = pd.DataFrame({"Date" : dates,  "Price": daily_arr})
+                df = self.normalize_daily_tables(df)
 
             df = df[["Date", "Price"]].sort_values(by="Date")
             df = df.reset_index(drop=True)
@@ -109,17 +159,8 @@ class HubData():
             print(e)
         return df
 
-
     def save_to_csv(self, df: pd.DataFrame):
         str_name = datetime.now().strftime("%Y%m%d")
-        file_name = self.period + "_" + str_name + "csv"
-        if df:
-            df.to_csv(file_name)
-
-
-if __name__ == "__main__":
-    hubs_daily_url = get_url("day")
-    pg_content = get_html(hubs_daily_url)
-    df_tables = get_tables(pg_content)
-    df = normalize_tables(df_tables, period="day")
-    save_to_csv("daily.csv", df)
+        file_name = self.period + "_" + str_name + ".csv"
+        if not df.empty:
+            df.to_csv(file_name, index=False)
