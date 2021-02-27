@@ -1,5 +1,5 @@
 
-# Specter Assignment
+# HubData Assignment
 
 This repo contains details for the Datopian Assignment.
 
