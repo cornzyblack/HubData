@@ -31,7 +31,6 @@ class HubData:
         df_tables = self.get_tables(pg_content)
 
         self.df = self.normalize_tables(df_tables)
-        self.save_to_csv()
 
     def get_url(self):
         """Get the URL for a period
