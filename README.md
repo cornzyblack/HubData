@@ -64,6 +64,7 @@ To use the project:
        python main.py --period=year
 
     Save File with custom filename
+
        python main.py --period=year --filename=yearly_prices.csv
 
 
