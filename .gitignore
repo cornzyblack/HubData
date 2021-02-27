@@ -1,6 +1,5 @@
 *.ipynb
 venv
-*.csv
 __pycache__
 .vscode
 *.pyc
