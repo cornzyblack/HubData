@@ -7,8 +7,6 @@ This repo contains details for the Datopian Assignment.
 
 This Project requires that you have Python 3.8.1 installed. If you do not have it installed, you can download it [here](https://www.python.org/downloads/release/python-381/).
 
-To run the second scraper, you need to have Chrome and ChromeDriver installed. You can see here for how to download [Google Chrome](https://www.google.com/chrome/) and [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)
-
 ## To Setup a Python 3  Virtual  Environment
 After you have installed Python, you can run the following in your Terminal
 
