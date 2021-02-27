@@ -101,7 +101,7 @@ class HubData:
         df = None
         try:
             if page_content:
-                soup = BeautifulSoup(page_content, parser="lxml")
+                soup = BeautifulSoup(page_content, features="lxml")
                 table_data = soup.select(
                     'table[Summary="Henry Hub Natural Gas Spot Price (Dollars per Million Btu)"]'
                 )[0]
@@ -231,4 +231,4 @@ class HubData:
             filename = self.period + "_" + str_name + ".csv"
         if not self.df.empty:
             self.df.to_csv(filename, index=False)
-            print(f"File has been saved as {str_name}")
+            print(f"File has been saved as {filename}")
