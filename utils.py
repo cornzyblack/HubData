@@ -6,7 +6,7 @@ from datetime import date
 from dateparser import parse
 from datetime import datetime
 from bs4 import BeautifulSoup
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 from dateutil.relativedelta import relativedelta
 
 
@@ -63,9 +63,18 @@ class HubData:
         return year
 
     def clean_date(self, date: str) -> str:
+        """Clean the the Date String
+        Returns:
+            cars: A car mileage
+        """
         return "".join(date.split())
 
     def get_html(self) -> bytes:
+        """Get the raw HTML page
+
+        Returns:
+            bytes: the raw html page in bytes
+        """
         page_content = None
         soup = None
         try:
@@ -77,7 +86,15 @@ class HubData:
             print("Error parsing", e)
         return page_content
 
-    def get_tables(self, page_content: bytes) -> pd.DataFrame:
+    def get_tables(self, page_content: bytes) -> Optional[pd.DataFrame]:
+        """Transform the Page Content into a DataFrame
+
+        Args:
+            page_content (bytes): The page content that contains tables
+
+        Returns:
+            Optional[pd.DataFrame]: The Page content in the form of a DataFrame
+        """
         df = None
         try:
             if page_content:
@@ -90,7 +107,15 @@ class HubData:
             print(e)
         return df
 
-    def get_date_range(self, date_range_str: str):
+    def get_date_range(self, date_range_str: str) -> Tuple[datetime, datetime]:
+        """Generate the Date Range from a Date String
+
+        Args:
+            date_range_str (str): A Date Range in String format
+
+        Returns:
+            Tuple[datetime, datetime]: The Start Date and End date of a date string range
+        """
         date_range_str = clean_date(date_range_str)
         end_date = None
         start_date = None
@@ -112,7 +137,15 @@ class HubData:
 
         return start_date, end_date
 
-    def normalize_monthly_tables(self, df: pd.DataFrame):
+    def normalize_monthly_tables(self, df: pd.DataFrame) -> pd.DataFrame:
+        """normalize the monthly table
+
+        Args:
+            df (pd.DataFrame): The DataFrame of the momthly table from the HTML page
+
+        Returns:
+            pd.DataFrame: A Transformed monthly Dataframe
+        """
         df = df.melt(["Year"], var_name="month", value_name="Price")
         df = df.rename(columns={"Year": "Date"})
         df["Date"] = pd.to_datetime(
@@ -120,7 +153,15 @@ class HubData:
         )
         return df
 
-    def normalize_yearly_tables(self, df: pd.DataFrame):
+    def normalize_yearly_tables(self, df: pd.DataFrame) -> pd.DataFrame:
+        """normalize the yearly table
+
+        Args:
+            df (pd.DataFrame): The DataFrame of the yearly table from the HTML page
+
+        Returns:
+            pd.DataFrame: A Transformed yearly Dataframe
+        """
         df = df.melt(["Decade"], var_name="Year", value_name="Price")
         df["Decade"] = df["Decade"].str.replace("'s", "", regex=True).astype(int)
         df["Year"] = df["Year"].str.replace("Year\-", "", regex=True).astype(int)
@@ -128,7 +169,15 @@ class HubData:
         df = df.sort_values(by="Date")[["Date", "Price"]]
         return df
 
-    def normalize_daily_tables(self, df: pd.DataFrame):
+    def normalize_daily_tables(self, df: pd.DataFrame) -> pd.DataFrame:
+        """normalize the daily table
+
+        Args:
+            df (pd.DataFrame): The DataFrame of the daily table from the HTML page
+
+        Returns:
+            pd.DataFrame: A Transformed daily Dataframe
+        """
         dates = []
         daily_arr = np.array(df[["Mon", "Tue", "Wed", "Thu", "Fri"]]).flatten()
         date_range_list = list(
@@ -141,6 +190,14 @@ class HubData:
         return df
 
     def normalize_tables(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Normalize any Table from any period
+
+        Args:
+            df (pd.DataFrame): The normalized Table
+
+        Returns:
+            pd.DataFrame: A DataFrame that contains the normalized Table
+        """
         try:
             df = df.replace({"--": np.nan, "W": np.nan})
 
@@ -160,6 +217,11 @@ class HubData:
         return df
 
     def save_to_csv(self, df: pd.DataFrame):
+        """Save the Table to a CSV format
+
+        Args:
+            df (pd.DataFrame): The normalized DataFrame
+        """
         str_name = datetime.now().strftime("%Y%m%d")
         file_name = self.period + "_" + str_name + ".csv"
         if not df.empty:
