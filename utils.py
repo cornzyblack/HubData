@@ -223,7 +223,7 @@ class HubData:
             df (pd.DataFrame): The normalized DataFrame
         """
         str_name = datetime.now().strftime("%Y%m%d")
-        if not file_name:
+        if not filename:
             filename = self.period + "_" + str_name + ".csv"
         if not df.empty:
             df.to_csv(filename, index=False)
