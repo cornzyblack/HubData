@@ -226,3 +226,4 @@ class HubData:
         file_name = self.period + "_" + str_name + ".csv"
         if not df.empty:
             df.to_csv(file_name, index=False)
+            print(f"File has been saved as {str_name}")
