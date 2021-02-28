@@ -43,8 +43,6 @@ source venv/Scripts/activate
 ```bash
 python3 -m pip install -r requirements.txt
 ```
-**NOTE**:
-To run the second scraper (scraper_2.py), you need to have Google Chrome installed as well as Chromedriver on your Machine.
 
 # Usage
 
