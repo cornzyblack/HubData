@@ -7,7 +7,7 @@ from dotenv import load_env
 load_env()
 # Sign-in with your unique token
 
-api_token = os.getenv("token")
+api_token = os.getenv("TOKEN")
 dp.login(token=api_token)
 
 df = pd.read_csv("data/daily_prices.csv")
