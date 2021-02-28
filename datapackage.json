@@ -2,7 +2,6 @@
     "name": "daily_prices",
     "title": "The Daily Oil Prices",
     "version": "1.0",
-    # here we list the data files in this dataset
     "resources": [
         {
             "name": "constituents",
@@ -14,7 +13,7 @@
                     {
                         "name": "Date",
                         "description": "The Date for the Price",
-                        "type": "string"
+                        "type": "datetime"
                     },
                     {
                         "name": "price",
@@ -31,5 +30,5 @@
             "path": "http://www.eia.gov/naturalgas",
             "title": "EIA"
         }
-    ],
+    ]
 }
