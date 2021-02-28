@@ -18,4 +18,3 @@ jobs:
         with:
           script: "reports/daily_script.py"
           TOKEN: ${{ secrets.TOKEN }}
-          token: ${{ secrets.TOKEN }}
