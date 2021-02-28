@@ -3,6 +3,7 @@
 
 This repo contains details for the Datopian Assignment.
 
+Find the Github page here: https://cornzyblack.github.io/
 # Installation
 
 This Project requires that you have Python 3.8.1 installed. If you do not have it installed, you can download it [here](https://www.python.org/downloads/release/python-381/).
