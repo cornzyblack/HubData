@@ -17,4 +17,5 @@ jobs:
       - uses: datapane/build-action@v2
         with:
           script: "reports/daily_script.py"
+          TOKEN: ${{ secrets.TOKEN }}
           token: ${{ secrets.TOKEN }}
