@@ -6,7 +6,7 @@ from datetime import date
 
 
 api_token = os.getenv("TOKEN")
-dp.login(token=api_token, cli_login=False)
+dp.login(token=api_token)
 
 df = pd.read_csv("../data/daily_prices.csv")
 
