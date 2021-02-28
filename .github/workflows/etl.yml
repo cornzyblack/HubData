@@ -1,0 +1,17 @@
+on:
+  schedule:
+    # run at 5pm every Friday
+    - cron: "00 17 * * 1-5"
+jobs:
+  build_report:
+    runs-on: ubuntu-latest
+    name: Run end-of-week Datapane reports
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - uses: datapane/build-action@v2
+        with:
+          script: "reports/daily_script.py"
+          token: ${{ secrets.TOKEN }}
