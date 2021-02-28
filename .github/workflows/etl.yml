@@ -1,6 +1,6 @@
 on:
   schedule:
-    # run at 5pm every Friday
+    # run at 5pm every Monday - Friday
     - cron: "00 17 * * 1-5"
 jobs:
   build_report:
