@@ -25,31 +25,18 @@
     <script>
         // Assign the specification to a local variable vlSpec.
         var vlSpec = {
-            $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-            data: {
-                values: [
-                    { a: 'C', b: 2 },
-                    { a: 'C', b: 7 },
-                    { a: 'C', b: 4 },
-                    { a: 'D', b: 1 },
-                    { a: 'D', b: 2 },
-                    { a: 'D', b: 6 },
-                    { a: 'E', b: 8 },
-                    { a: 'E', b: 4 },
-                    { a: 'E', b: 7 }
-                ]
-            },
-            mark: 'bar',
-            encoding: {
-                y: { field: 'a', type: 'nominal' },
-                x: {
-                    aggregate: 'average',
-                    field: 'b',
-                    type: 'quantitative',
-                    axis: {
-                        title: 'Average of b'
-                    }
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "A scatterplot showing horsepower and miles per gallons for various cars.",
+            "data": {
+                "url": "http://github.com/cornzyblack/HubData/blob/master/monthly_prices.csv",
+                "format": {
+                    "type": "csv"
                 }
+            },
+            "mark": "point",
+            "encoding": {
+                "x": { "field": "Horsepower", "type": "quantitative" },
+                "y": { "field": "Miles_per_Gallon", "type": "quantitative" }
             }
         };
 

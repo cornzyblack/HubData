@@ -1,0 +1,35 @@
+{
+    "name": "daily_prices",
+    "title": "The Daily Oil Prices",
+    "version": "1.0",
+    # here we list the data files in this dataset
+    "resources": [
+        {
+            "name": "constituents",
+            "path": "data/daily_prices.csv",
+            "format": "csv",
+            "mediatype": "text/csv",
+            "schema": {
+                "fields": [
+                    {
+                        "name": "Date",
+                        "description": "The Date for the Price",
+                        "type": "string"
+                    },
+                    {
+                        "name": "price",
+                        "description": "The Price of the Oil from HubData",
+                        "type": "float"
+                    }
+                ]
+            }
+        }
+    ],
+    "sources": [
+        {
+            "name": "EIA",
+            "path": "http://www.eia.gov/naturalgas",
+            "title": "EIA"
+        }
+    ],
+}
