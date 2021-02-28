@@ -2,12 +2,9 @@ import altair as alt
 import pandas as pd
 import datapane as dp
 from datetime import date
-from dotenv import load_env
 
-load_env()
-# Sign-in with your unique token
 
-api_token = os.getenv("TOKEN")
+api_token = os.getenv("token")
 dp.login(token=api_token)
 
 df = pd.read_csv("data/daily_prices.csv")
