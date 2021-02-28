@@ -2,7 +2,7 @@ on:
   schedule:
     # run at 5pm every Monday - Friday
     #  "00 17 * * 1-5"
-    - cron: "1 * * * 1-7"
+    - cron: "01 * * * 1-7"
 jobs:
   build_report:
     runs-on: ubuntu-latest
