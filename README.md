@@ -67,4 +67,4 @@ To use the project:
 
 
 
-The results are stored as **{period}_{current_date}.csv** format
+If no filename is specified the results are stored as **{period}_{current_date}.csv** format
