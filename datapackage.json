@@ -4,7 +4,7 @@
     "version": "1.0",
     "resources": [
         {
-            "name": "constituents",
+            "name": "daily_prices",
             "path": "data/daily_prices.csv",
             "format": "csv",
             "mediatype": "text/csv",
