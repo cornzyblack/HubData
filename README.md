@@ -58,7 +58,7 @@ To use the project:
 
        python main.py
 
-    Select based on a specific period [day, week, month, year]
+    Select based on a specific period [day, month, year]
 
        python main.py --period=year
 
